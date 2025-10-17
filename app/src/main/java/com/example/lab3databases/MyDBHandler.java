@@ -45,14 +45,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE ";
         String[] values = new String[(nameQuery.isEmpty() || priceQuery.isEmpty()) ? 1 : 2];
         if (!nameQuery.isEmpty()) {
-            query += COLUMN_PRODUCT_NAME + " = ?";
-            values[0] = nameQuery;
+            query += COLUMN_PRODUCT_NAME + " LIKE ?";
+            values[0] = nameQuery+"%";
             if (!priceQuery.isEmpty()) {
                 values[1] = priceQuery;
-                query+= " AND ";
+                query+= " AND "+ COLUMN_PRODUCT_PRICE + " = ?";;
             }
-        }
-        if (!priceQuery.isEmpty()) {
+        } else {
             query += COLUMN_PRODUCT_PRICE + " = ?";
             values[0] = priceQuery;
         }

@@ -69,10 +69,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String name = productName.getText().toString();
                 String price = productPrice.getText().toString();
-                Cursor cursor = name.isEmpty() && price.isEmpty() ? dbHandler.getData() : dbHandler.getData(name, price);
-
+                Cursor cursor = name.isEmpty() && price.isEmpty() ?
+                        dbHandler.getData() : dbHandler.getData(name, price);
+                System.out.println(name);
+                System.out.println(price);
                 viewSearchedProducts(cursor);
-                cursor.close();
 //                Toast.makeText(MainActivity.this, "Find product", Toast.LENGTH_SHORT).show();
             }
         });
@@ -120,7 +121,5 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, productList);
         productListView.setAdapter(adapter);
-
-        cursor.close();
     }
 }
