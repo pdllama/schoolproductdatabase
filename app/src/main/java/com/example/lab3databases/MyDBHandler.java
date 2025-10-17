@@ -40,13 +40,23 @@ public class MyDBHandler extends SQLiteOpenHelper {
         return db.rawQuery(query, null); // returns "cursor" all products from the table
     }
 
-    public Cursor getData(int idQuery, String nameQuery, double priceQuery) {
+    public Cursor getData(String nameQuery, String priceQuery) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE ";
-        query += COLUMN_ID + " LIKE %" + idQuery + "% AND ";
-        query += COLUMN_PRODUCT_NAME + " LIKE %" + nameQuery + "% AND ";
-        query += COLUMN_PRODUCT_PRICE + " LIKE %" + priceQuery + "%";
-        return db.rawQuery(query, null); // returns "cursor" all products from the table
+        String[] values = new String[(nameQuery.isEmpty() || priceQuery.isEmpty()) ? 1 : 2];
+        if (!nameQuery.isEmpty()) {
+            query += COLUMN_PRODUCT_NAME + " = ?";
+            values[0] = nameQuery;
+            if (!priceQuery.isEmpty()) {
+                values[1] = priceQuery;
+                query+= " AND ";
+            }
+        }
+        if (!priceQuery.isEmpty()) {
+            query += COLUMN_PRODUCT_PRICE + " = ?";
+            values[0] = priceQuery;
+        }
+        return db.rawQuery(query, values); // returns "cursor" all products from the table
     }
 
     public void addProduct(Product product) {
@@ -63,8 +73,8 @@ public class MyDBHandler extends SQLiteOpenHelper {
 
     public void deleteProduct(String name) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = COLUMN_PRODUCT_NAME+" = "+name;
-        db.delete(TABLE_NAME, query, null);
+        String query = COLUMN_PRODUCT_NAME+" = ?";
+        db.delete(TABLE_NAME, query, new String[]{name});
         db.close();
     }
 }

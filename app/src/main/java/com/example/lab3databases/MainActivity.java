@@ -67,12 +67,12 @@ public class MainActivity extends AppCompatActivity {
         findBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int id = Integer.parseInt(productId.getText().toString());
                 String name = productName.getText().toString();
-                double price = Double.parseDouble(productPrice.getText().toString());
-                Cursor cursor = dbHandler.getData(id, name, price);
+                String price = productPrice.getText().toString();
+                Cursor cursor = name.isEmpty() && price.isEmpty() ? dbHandler.getData() : dbHandler.getData(name, price);
 
                 viewSearchedProducts(cursor);
+                cursor.close();
 //                Toast.makeText(MainActivity.this, "Find product", Toast.LENGTH_SHORT).show();
             }
         });
@@ -120,5 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, productList);
         productListView.setAdapter(adapter);
+
+        cursor.close();
     }
 }
